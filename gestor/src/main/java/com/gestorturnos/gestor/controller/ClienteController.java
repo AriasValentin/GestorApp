@@ -3,7 +3,9 @@ package com.gestorturnos.gestor.controller;
 import com.gestorturnos.gestor.dto.ClienteDTO;
 import com.gestorturnos.gestor.dto.UsuarioDTO;
 import com.gestorturnos.gestor.service.ClienteService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,18 +17,23 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    @GetMapping("/buscarTodos")
+    //Se deja adjunto para otro enfoque.
+    @Autowired
+    private EntityManager entityManager;
+
+    @GetMapping()
     public List<ClienteDTO> buscarTodos(){
         return clienteService.buscarTodos();
     }
 
-    @GetMapping("/buscar/{id}")
+    @GetMapping("/{id}")
     public ClienteDTO buscarCliente(@PathVariable Long id){
 
         return clienteService.buscarUno(id);
     }
 
-    @PostMapping("/agregar")
+    @PostMapping()
+    @Transactional
     public String agregarCliente(@RequestBody ClienteDTO cliente){
 
         clienteService.crearRegistro(cliente);
@@ -34,7 +41,8 @@ public class ClienteController {
     }
 
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
+    @Transactional
     public String eliminarCliente(@PathVariable Long id){
 
         clienteService.eliminarRegistro(id);
@@ -42,7 +50,8 @@ public class ClienteController {
 
     }
 
-    @PutMapping("/modificar/{dni}")
+    @PutMapping("/{dni}")
+    @Transactional
     public String modificarUsuario(@PathVariable Long dni, @RequestBody ClienteDTO cliente) {
         ClienteDTO clienteExistente = clienteService.buscarUno(dni);
         if (clienteExistente != null) {

@@ -3,7 +3,9 @@ package com.gestorturnos.gestor.controller;
 import com.gestorturnos.gestor.dto.ClienteDTO;
 import com.gestorturnos.gestor.dto.TurnoDTO;
 import com.gestorturnos.gestor.service.TurnoService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,18 +17,23 @@ public class TurnoController {
     @Autowired
     private TurnoService turnoService;
 
-    @GetMapping("/buscarTodos")
+    //Se deja adjunto para otro enfoque.
+    @Autowired
+    private EntityManager entityManager;
+
+    @GetMapping()
     public List<TurnoDTO> buscarTodos(){
         return turnoService.buscarTodos();
     }
 
-    @GetMapping("/buscar/{id}")
+    @GetMapping("/{id}")
     public TurnoDTO buscarTurno(@PathVariable Long id){
 
         return turnoService.buscarUno(id);
     }
 
-    @PostMapping("/agregar")
+    @PostMapping()
+    @Transactional
     public String agregarTurno(@RequestBody TurnoDTO turno){
 
         turnoService.crearRegistro(turno);
@@ -34,7 +41,8 @@ public class TurnoController {
     }
 
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
+    @Transactional
     public String eliminarTurno(@PathVariable Long id){
 
         turnoService.eliminarRegistro(id);
@@ -42,7 +50,8 @@ public class TurnoController {
 
     }
 
-    @PutMapping("/modificar/{id}")
+    @PutMapping("/{id}")
+    @Transactional
     public String modificarTurno(@PathVariable Long id, @RequestBody TurnoDTO turno) {
         TurnoDTO turnoExistente = turnoService.buscarUno(id);
         if (turnoExistente != null) {
